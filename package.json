@@ -5,9 +5,9 @@
   "scripts": {
     "dev": "next dev --webpack",
     "build": "next build",
-    "start": "next start",
+    "start": "tsx server/next-server.ts",
     "lint": "eslint .",
-    "server": "npx tsx server/index.ts",
+    "server": "tsx server/index.ts",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\""
   },
   "dependencies": {
@@ -67,7 +67,8 @@
     "vaul": "^1.1.2",
     "ws": "^8.18.0",
     "zod": "^3.24.1",
-    "zustand": "^4.5.0"
+    "zustand": "^4.5.0",
+    "tsx": "^4.19.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.2.0",

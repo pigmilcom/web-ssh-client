@@ -135,8 +135,7 @@ export function SSHClient() {
         }
       }
     },
-    onError: (error) => {
-      console.warn('SSH WebSocket:', error);
+    onError: (error) => { 
       setIsConnecting(false);
     },
     onKeyboardInteractive: (prompt) => {

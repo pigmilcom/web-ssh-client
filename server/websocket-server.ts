@@ -1,4 +1,5 @@
 import { WebSocketServer, WebSocket } from 'ws';
+import { Server as HttpServer } from 'http';
 import { SSHConnection } from './ssh-manager';
 import type { 
   WSMessage, 
@@ -27,10 +28,15 @@ export class SSHWebSocketServer {
   private sessions: Map<string, SessionData> = new Map();
   private pingInterval: NodeJS.Timeout | null = null;
 
-  constructor(port: number = 8080) {
-    this.wss = new WebSocketServer({ port });
+  constructor(portOrServer: number | HttpServer = 8080) {
+    if (typeof portOrServer === 'number') {
+      this.wss = new WebSocketServer({ port: portOrServer });
+      console.log(`[SSH WebSocket Server] Running on ws://localhost:${portOrServer}`);
+    } else {
+      this.wss = new WebSocketServer({ server: portOrServer });
+      console.log('[SSH WebSocket Server] Attached to HTTP server');
+    }
     this.setupServer();
-    console.log(`[SSH WebSocket Server] Running on ws://localhost:${port}`);
   }
 
   private setupServer(): void {

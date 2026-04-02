@@ -1,0 +1,42 @@
+services:
+  web-ssh-client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # ── IMPORTANT ────────────────────────────────────────────────────────
+        # This value is embedded into the Next.js bundle at BUILD TIME.
+        # Set it to your public domain with the correct scheme:
+        #   HTTPS deployment → wss://your-domain.com
+        #   HTTP  deployment → ws://your-domain.com
+        # In Coolify you can expose this as a build-time variable instead.
+        # ─────────────────────────────────────────────────────────────────────
+        NEXT_PUBLIC_WS_URL: ${NEXT_PUBLIC_WS_URL:-ws://localhost:3000}
+
+    image: web-ssh-client:latest
+
+    container_name: web-ssh-client
+
+    restart: unless-stopped
+
+    ports:
+      # Single port — serves both the Next.js frontend and the WebSocket server.
+      # In Coolify, configure a proxy rule pointing your domain to port 3000
+      # and remove this ports block (Coolify manages ingress).
+      - "3000:3000"
+
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+
+    # Uncomment to mount a persistent known-hosts file if you use strict
+    # host key verification:
+    # volumes:
+    #   - ./known-hosts.json:/app/known-hosts.json:ro
+
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
